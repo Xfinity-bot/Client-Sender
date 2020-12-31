@@ -16,5 +16,6 @@ Can transfer any type of  files provided IP Address within same network.
 
 
 ## Note
-Requires [Server-Receiver](https://github.com/Xfinity-bot/Server-Receiver)
+* Requires [Server-Receiver](https://github.com/Xfinity-bot/Server-Receiver)
+* Maximum File Size limit is not tested.
 

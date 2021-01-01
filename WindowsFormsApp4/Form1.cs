@@ -13,17 +13,22 @@ using System.Net;
 namespace WindowsFormsApp4
 {
     public partial class Form1 : Form
-    {
+    {    
+        //Creating global variable
         class Global
         {
             public static string filename;
 
         }
+
+        //Intialise Components
         public Form1()
         {
             InitializeComponent();
         }
         
+
+        //Getting IP From the text box (User entered)
         public string GetIP()
         {
             
@@ -43,7 +48,7 @@ namespace WindowsFormsApp4
         {
 
         }
-
+        //Dialog box to select a file
         private void button2_Click(object sender, EventArgs e)
         {
             OpenFileDialog op = new OpenFileDialog();
@@ -56,20 +61,24 @@ namespace WindowsFormsApp4
         private void button1_Click(object sender, EventArgs e)
         {
 
-            //var ipad = "192.168.0.104";
+            
             try {
-                
-                
 
+
+                //Create a TCPClient object at the IP and port no
                 TcpClient tcpClient1 = new TcpClient();
                 tcpClient1.Connect(new IPEndPoint(IPAddress.Parse(GetIP()), 5050));
 
                 byte[] buffern = new byte[1500];
                 
-
+                //creating network stream object
                 NetworkStream nwStream = tcpClient1.GetStream();
+
+                //Encoding the filename string
                 byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(Path.GetFileName(Global.filename));
-               
+
+
+                //send the text through the stream
                 nwStream.Write(bytesToSend, 0, bytesToSend.Length);
 
                 tcpClient1.Close();
@@ -83,35 +92,41 @@ namespace WindowsFormsApp4
                 MessageBox.Show(ex.Message);
             }
             try
-            {
+            {   //Creates a TextReader that reads characters from a byte stream in a particular encoding.
                 StreamReader sr = new StreamReader(textBox1.Text);
 
+                //Create a TCPClient object at the IP and port no
                 TcpClient tcpClient = new TcpClient();
+                //Establishing connection 
                 tcpClient.Connect(new IPEndPoint(IPAddress.Parse(GetIP()), 8085));
 
                 byte[] buffer = new byte[1500];
                 long bytesSent = 0;
 
+                //loop for sending chunks of data
                 while (bytesSent < sr.BaseStream.Length)
-                {
+                {  
+                    //Writes data to the NetworkStream from a specified range of a byte array.
                     int bytesRead = sr.BaseStream.Read(buffer, 0, 1500);
                     tcpClient.GetStream().Write(buffer, 0, bytesRead);
                    
 
                     bytesSent += bytesRead;
                 }
-
+                //Closing tcp connection 
                 tcpClient.Close();
 
                 Message("File Sent...");
                 Console.ReadLine();
-            }
+            } 
+            //Catching any errors with message box
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
 
         }
+        //Function to display message to listbox
         public void Message(string data)
         {
             listBox1.Items.Add(data);
